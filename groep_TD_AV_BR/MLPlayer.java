@@ -26,16 +26,20 @@ public class MLPlayer extends PylosPlayer {
     private OrtEnvironment env2;
     private OrtSession session2;
 
-    private static final String MODEL_PATH = "./pylos-student/src/main/java/be/kuleuven/pylos/player/student/groep_TD_AV_BR/pylos_model_MP.onnx"; // Dit is het model dat move/place acties doet
-    private static final String MODEL_PATH2 = "./pylos-student/src/main/java/be/kuleuven/pylos/player/student/groep_TD_AV_BR/pylos_model_RP.onnx"; // Dit is het model dat remove/pass acties doet
+    private static final String MODEL_PATH = "./pylos-student/src/main/java/be/kuleuven/pylos/player/student/pylos_model_MP.onnx"; // Dit is het model dat move/place acties doet
+    private static final String MODEL_PATH2 = "./pylos-student/src/main/java/be/kuleuven/pylos/player/student/pylos_model_RP.onnx"; // Dit is het model dat remove/pass acties doet
 
 
     public MLPlayer() {
         try {
+            // Create session options and set thread count
+            OrtSession.SessionOptions sessionOptions = new OrtSession.SessionOptions();
+            sessionOptions.setIntraOpNumThreads(1);
+
             env = OrtEnvironment.getEnvironment();
-            session = env.createSession(MODEL_PATH);
-            env2 = OrtEnvironment.getEnvironment(); // zelfde env gebruiken voor remove pass model
-            session2 = env2.createSession(MODEL_PATH2);
+            session = env.createSession(MODEL_PATH, sessionOptions);
+            env2 = OrtEnvironment.getEnvironment();
+            session2 = env2.createSession(MODEL_PATH2, sessionOptions);
         } catch (Exception e) {
             e.printStackTrace();
         }
